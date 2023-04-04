@@ -1,8 +1,11 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const morgan = require("morgan");
 const cors = require("cors");
+const Person = require("./models/persons");
 
+// express options
 app.use(cors());
 app.use(express.static("dist"));
 app.use(express.json());
@@ -21,35 +24,10 @@ app.use(
   })
 );
 
-let phoneBook = [
-  {
-    id: 1,
-    name: "Arto Hellas",
-    number: "040-123456",
-  },
-  {
-    id: 2,
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-  },
-  {
-    id: 3,
-    name: "Dan Abramov",
-    number: "12-43-234345",
-  },
-  {
-    id: 4,
-    name: "Mary Peppendieck",
-    number: "39-23-6423122",
-  },
-];
-
-app.get("/", (request, response) => {
-  response.send("<h1>Hello World! </h1>");
-});
-
 app.get("/api/persons", (request, response) => {
-  response.json(phoneBook);
+  Person.find({}).then((persons) => {
+    response.json(persons);
+  });
 });
 
 app.get("/info", (request, response) => {
@@ -63,44 +41,59 @@ app.get("/info", (request, response) => {
 });
 
 app.get("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
-  const person = phoneBook.find((person) => person.id === id);
-  person ? response.json(person) : response.status(404).end();
+  Person.findById(request.params.id)
+    .then((person) => {
+      if (person) {
+        response.json(person);
+      } else {
+        response.status(404).end();
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      response.status(500).end();
+    });
 });
 
 app.post("/api/persons", (request, response) => {
-  const newPerson = request.body;
-  const randomID = Math.floor(Math.random() * 1000);
-  newPerson.id = randomID;
-  const nameInBook = phoneBook.find((person) => person.name === newPerson.name);
+  const body = request.body;
 
-  if (nameInBook) {
-    console.log(nameInBook);
-    return response.status(400).json({
-      error: "name is not unique",
-    });
-  } else if (!newPerson.name) {
-    return response.status(400).json({
-      error: "missing name",
-    });
-  } else if (!newPerson.number) {
-    return response.status(400).json({
-      error: "missing number",
-    });
-  }
+  const person = new Person({
+    name: body.name,
+    number: body.number,
+  });
 
-  phoneBook = phoneBook.concat(newPerson);
-  response.json(newPerson);
+  person.save().then((savedPerson) => {
+    response.json(savedPerson);
+  });
+
+  // const nameInBook = phoneBook.find((person) => person.name === newPerson.name);
+
+  // if (nameInBook) {
+  //   console.log(nameInBook);
+  //   return response.status(400).json({
+  //     error: "name is not unique",
+  //   });
+  // } else if (!newPerson.name) {
+  //   return response.status(400).json({
+  //     error: "missing name",
+  //   });
+  // } else if (!newPerson.number) {
+  //   return response.status(400).json({
+  //     error: "missing number",
+  //   });
+  // }
 });
 
 app.delete("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id);
-  phoneBook = phoneBook.filter((person) => person.id !== id);
-  console.log(phoneBook);
-  response.status(204).end();
+  Person.findByIdAndDelete(request.params.id)
+    .then((result) => {
+      response.status(204).end();
+    })
+    .catch((error) => console.log(error));
 });
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 
 app.listen(PORT, () => {
   console.log(`server running on port ${PORT}`);
