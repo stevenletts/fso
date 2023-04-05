@@ -24,23 +24,28 @@ app.use(
   })
 );
 
-app.get("/api/persons", (request, response) => {
-  Person.find({}).then((persons) => {
-    response.json(persons);
-  });
+app.get("/api/persons", (request, response, next) => {
+  Person.find({})
+    .then((persons) => {
+      response.json(persons);
+    })
+    .catch((error) => next(error));
 });
 
-app.get("/info", (request, response) => {
-  const length = phoneBook.length;
+app.get("/info", (request, response, next) => {
   const requestDate = new Date().toLocaleString();
   const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  response.send(
-    `<div><p>Phonebook has info for ${length} people</p></div>
+  Person.find({})
+    .then((persons) => {
+      response.send(
+        `<div><p>Phonebook has info for ${persons.length} people</p></div>
     <div><p>${requestDate} ${timeZone} </p></div>`
-  );
+      );
+    })
+    .catch((error) => next(error));
 });
 
-app.get("/api/persons/:id", (request, response) => {
+app.get("/api/persons/:id", (request, response, next) => {
   Person.findById(request.params.id)
     .then((person) => {
       if (person) {
@@ -50,12 +55,11 @@ app.get("/api/persons/:id", (request, response) => {
       }
     })
     .catch((error) => {
-      console.log(error);
-      response.status(500).end();
+      next(error);
     });
 });
 
-app.post("/api/persons", (request, response) => {
+app.post("/api/persons", (request, response, next) => {
   const body = request.body;
 
   const person = new Person({
@@ -63,35 +67,32 @@ app.post("/api/persons", (request, response) => {
     number: body.number,
   });
 
-  person.save().then((savedPerson) => {
-    response.json(savedPerson);
-  });
-
-  // const nameInBook = phoneBook.find((person) => person.name === newPerson.name);
-
-  // if (nameInBook) {
-  //   console.log(nameInBook);
-  //   return response.status(400).json({
-  //     error: "name is not unique",
-  //   });
-  // } else if (!newPerson.name) {
-  //   return response.status(400).json({
-  //     error: "missing name",
-  //   });
-  // } else if (!newPerson.number) {
-  //   return response.status(400).json({
-  //     error: "missing number",
-  //   });
-  // }
+  person
+    .save()
+    .then((savedPerson) => {
+      response.json(savedPerson);
+    })
+    .catch((error) => next(error));
 });
 
-app.delete("/api/persons/:id", (request, response) => {
+app.delete("/api/persons/:id", (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
-    .then((result) => {
+    .then(() => {
       response.status(204).end();
     })
-    .catch((error) => console.log(error));
+    .catch((error) => next(error));
 });
+
+const errorHandler = (error, request, response, next) => {
+  console.log(error.message);
+
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malforamatted ID" });
+  }
+  next(error);
+};
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT;
 
