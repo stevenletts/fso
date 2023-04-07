@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
 
-const password = "FSOpen1995";
-
 const url = process.env.MONGODB_URL;
 
 mongoose.set("strictQuery", false);
