@@ -13,7 +13,7 @@ const Blog = ({ blog, user, updateBlog, deleteBlog }) => {
 
   if (!visible) {
     return (
-      <div style={blogStyle}>
+      <div className={"blog"} style={blogStyle}>
         {blog.title} {blog.author}
         <button onClick={() => setVisible(true)}>View</button>
       </div>
@@ -38,7 +38,7 @@ const Blog = ({ blog, user, updateBlog, deleteBlog }) => {
   const whoAdded = blog.user.name ? blog.user.name : user;
 
   return (
-    <div style={blogStyle}>
+    <div className={"blog"} style={blogStyle}>
       <p>
         {blog.title} {blog.author}{" "}
         <button onClick={() => setVisible(false)}>Hide</button>

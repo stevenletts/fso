@@ -39,7 +39,7 @@ const App = () => {
       setPassword("");
       setUsername("");
     } catch (exception) {
-      setErrorMessage("wrong credintials");
+      setErrorMessage("wrong credentials");
       setTimeout(() => {
         setErrorMessage(null);
       }, 5000);
@@ -71,6 +71,7 @@ const App = () => {
 
   const deleter = async (deadBlog) => {
     await blogService.del(deadBlog);
+
     setBlogs(blogs.filter((blog) => blog.id !== deadBlog));
   };
 
