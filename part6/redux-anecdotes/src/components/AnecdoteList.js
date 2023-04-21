@@ -18,7 +18,6 @@ const AnecdoteList = () => {
     dispatch(incrementVote(anecdote.id));
     dispatch(setNotification("you voted for " + anecdote.content));
     setTimeout(() => {
-      console.log("Hellllllo");
       dispatch(setNotification(""));
     }, 5000);
   };
