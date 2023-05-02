@@ -1,11 +1,9 @@
-POST http://localhost:3001/api/blogs
+POST http://localhost:3001/api/users
 Content-Type: application/json
 
 {
-    "title": "React patterns",
-    "author": "Michael Chan",
-    "url": "https://reactpatterns.com/",
-    "likes": 7,
-    "userId": "643553c410c0da6838328384"
+    "username": "steven",
+    "name":"steven",
+    "password": "password"
   
 }
