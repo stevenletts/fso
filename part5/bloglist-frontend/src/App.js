@@ -54,6 +54,7 @@ const App = () => {
 
   const addBlog = (newBlog) => {
     blogService.create(newBlog).then((newBlogReturned) => {
+      console.log(newBlogReturned);
       setBlogs(blogs.concat(newBlogReturned));
 
       blogFromRef.current.toggleVisiblity();
@@ -71,7 +72,6 @@ const App = () => {
 
   const deleter = async (deadBlog) => {
     await blogService.del(deadBlog);
-
     setBlogs(blogs.filter((blog) => blog.id !== deadBlog));
   };
 
@@ -109,9 +109,10 @@ const App = () => {
           <Blog
             key={blog.id}
             blog={blog}
-            user={user.name}
+            user={blog.user.username}
             updateBlog={update}
             deleteBlog={deleter}
+            canRemove={blog.user.username === user.username}
           />
         ))}
     </div>
