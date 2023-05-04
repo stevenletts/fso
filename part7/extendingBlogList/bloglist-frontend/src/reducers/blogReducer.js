@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import blogService from "../services/blogs";
-import { settingNotification } from "./reducers/notificationReducer";
+import { settingNotification } from "./notificationReducer.js";
 
 const blogSlice = createSlice({
   name: "blogs",
@@ -9,13 +9,22 @@ const blogSlice = createSlice({
     setBlogs(state, action) {
       return action.payload;
     },
-    addBlog(state, action) {
+    addBlogToState(state, action) {
       state.push(action.payload);
+    },
+    likeBlog(state, action) {
+      const id = action.payload.id;
+      return state.map((blog) => (blog.id === id ? action.payload : blog));
+    },
+    deleteBlog(state, action) {
+      console.log(action);
+      return state.filter((blog) => blog.id !== action.payload);
     },
   },
 });
 
-export const { setBlogs, addBlogAction } = blogSlice.actions;
+export const { setBlogs, addBlogToState, likeBlog, deleteBlog } =
+  blogSlice.actions;
 
 export const initaliseBlogs = () => {
   return async (dispatch) => {
@@ -27,7 +36,7 @@ export const initaliseBlogs = () => {
 export const addBlog = (Blog) => {
   return async (dispatch) => {
     const newBlog = await blogService.create(Blog);
-    dispatch(addBlogAction(newBlog));
+    dispatch(addBlogToState(newBlog));
     dispatch(
       settingNotification(
         {
@@ -37,6 +46,20 @@ export const addBlog = (Blog) => {
         5
       )
     );
+  };
+};
+
+export const updateBlog = (blog) => {
+  return async (dispatch) => {
+    const updatedBlog = await blogService.update(blog);
+    dispatch(likeBlog(updatedBlog));
+  };
+};
+
+export const delBlog = (blog) => {
+  return async (dispatch) => {
+    await blogService.del(blog);
+    dispatch(deleteBlog(blog));
   };
 };
 

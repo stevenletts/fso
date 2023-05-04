@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { updateBlog, delBlog } from "../reducers/blogReducer";
 
-const Blog = ({ blog, user, updateBlog, deleteBlog, canRemove }) => {
+const Blog = ({ blog, user, canRemove }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLEft: 2,
@@ -8,6 +10,8 @@ const Blog = ({ blog, user, updateBlog, deleteBlog, canRemove }) => {
     borderWidth: 1,
     marginBottom: 5,
   };
+
+  const dispatch = useDispatch();
 
   const [visible, setVisible] = useState(false);
 
@@ -25,11 +29,12 @@ const Blog = ({ blog, user, updateBlog, deleteBlog, canRemove }) => {
       ...blog,
       likes: blog.likes + 1,
     };
-    updateBlog(updated);
+    dispatch(updateBlog(updated));
   };
 
   const deleter = () => {
-    if (window.confirm(`delete ${blog.title} ?`)) deleteBlog(blog.id);
+    if (window.confirm(`delStatenotificationte ${blog.title} ?`))
+      dispatch(delBlog(blog.id));
   };
 
   // get request returns a populated blog with user objet attached but new blogs created when logged in return

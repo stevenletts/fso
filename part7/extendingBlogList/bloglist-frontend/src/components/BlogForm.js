@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addBlog } from "../reducers/blogReducer";
 
-const BlogForm = ({ blogFromRef }) => {
+const BlogForm = ({ toggleRef }) => {
   const [newTitle, setTitle] = useState("");
   const [newAuthor, setAuthor] = useState("");
   const [newURL, setURL] = useState("");
@@ -21,7 +21,7 @@ const BlogForm = ({ blogFromRef }) => {
 
   const addingBlog = (event) => {
     event.preventDefault();
-    blogFromRef.current.toggleVisibility();
+    toggleRef.current.toggleVisiblity();
     dispatch(
       addBlog({
         title: newTitle,
