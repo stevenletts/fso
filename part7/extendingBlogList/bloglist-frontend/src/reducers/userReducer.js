@@ -3,11 +3,12 @@ import loginService from "../services/login";
 import blogService from "../services/blogs";
 import { settingNotification } from "./notificationReducer.js";
 
-const loginSlice = createSlice({
-  name: "login",
+const userSlice = createSlice({
+  name: "user",
   initialState: null,
   reducers: {
     login(state, action) {
+      console.log(action);
       return action.payload;
     },
     logout(state, action) {
@@ -16,7 +17,7 @@ const loginSlice = createSlice({
   },
 });
 
-export const { login, logout } = loginSlice.actions;
+export const { login, logout } = userSlice.actions;
 
 export const handleLogin = (credintials) => {
   return async (dispatch) => {
@@ -30,10 +31,13 @@ export const handleLogin = (credintials) => {
       blogService.setToken(user.token);
     } catch (exception) {
       dispatch(
-        settingNotification({
-          message: "something went wrong try again",
-          type: "error",
-        })
+        settingNotification(
+          {
+            message: "something went wrong try again",
+            type: "error",
+          },
+          5
+        )
       );
     }
   };
@@ -46,4 +50,4 @@ export const handleLogout = () => {
   };
 };
 
-export default loginSlice.reducer;
+export default userSlice.reducer;

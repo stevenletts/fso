@@ -25,6 +25,7 @@ const Blog = ({ blog, user, canRemove }) => {
   }
 
   const update = () => {
+    // vote function that updates the blog and then dispatches it to the reducer that updates the server and the redux state
     const updated = {
       ...blog,
       likes: blog.likes + 1,
