@@ -34,5 +34,12 @@ const del = async (deadBlog) => {
   return axios.delete(`${baseUrl}/${deadBlog}`);
 };
 
+const addComment = async (blog, comment) => {
+  const response = await axios.post(`${baseUrl}/${blog.id}/comments`, {
+    comment,
+  });
+  return response.data;
+};
+
 // eslint-disable-next-line import/no-anonymous-default-export
-export default { getAll, create, setToken, update, del };
+export default { getAll, create, setToken, update, del, addComment };

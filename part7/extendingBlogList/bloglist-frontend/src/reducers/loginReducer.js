@@ -3,12 +3,11 @@ import loginService from "../services/login";
 import blogService from "../services/blogs";
 import { settingNotification } from "./notificationReducer.js";
 
-const userSlice = createSlice({
+const loginSlice = createSlice({
   name: "user",
   initialState: null,
   reducers: {
     login(state, action) {
-      console.log(action);
       return action.payload;
     },
     logout(state, action) {
@@ -17,7 +16,7 @@ const userSlice = createSlice({
   },
 });
 
-export const { login, logout } = userSlice.actions;
+export const { login, logout } = loginSlice.actions;
 
 export const handleLogin = (credintials) => {
   return async (dispatch) => {
@@ -50,4 +49,4 @@ export const handleLogout = () => {
   };
 };
 
-export default userSlice.reducer;
+export default loginSlice.reducer;

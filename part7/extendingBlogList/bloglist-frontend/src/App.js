@@ -7,17 +7,23 @@ import LoginForm from "./components/LoginForm";
 import Notification from "./components/Notification";
 import Toggleable from "./components/Toggleable";
 import Header from "./components/Header";
+import Users from "./components/Users";
+import UserInfo from "./components/UserInfo";
+import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import { initaliseBlogs } from "./reducers/blogReducer";
-import { login } from "./reducers/userReducer";
+import { intialiseUsers } from "./reducers/usersReducer";
+import { login } from "./reducers/loginReducer";
+import { Routes, Route } from "react-router-dom";
 
 const App = () => {
   const dispatch = useDispatch();
-  const reduxUser = useSelector((state) => state.user);
+  const reduxLogin = useSelector((state) => state.login);
   const blogFromRef = useRef();
 
   useEffect(() => {
     dispatch(initaliseBlogs());
+    dispatch(intialiseUsers());
   }, []);
 
   useEffect(() => {
@@ -29,7 +35,7 @@ const App = () => {
     }
   }, []);
 
-  if (!reduxUser) {
+  if (!reduxLogin) {
     return (
       <div>
         <Notification />
@@ -45,7 +51,12 @@ const App = () => {
       <Toggleable buttonLabel="new blog" ref={blogFromRef}>
         <BlogForm toggleRef={blogFromRef} />
       </Toggleable>
-      <BlogList />
+      <Routes>
+        <Route path="/" element={<BlogList />} />
+        <Route path="/users" element={<Users />} />
+        <Route path="/users/:id" element={<UserInfo />} />
+        <Route path="/blogs/:id" element={<Blog />} />
+      </Routes>
     </div>
   );
 };
