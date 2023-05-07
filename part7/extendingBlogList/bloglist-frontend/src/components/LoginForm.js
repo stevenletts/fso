@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { handleLogin } from "../reducers/loginReducer";
 import { useDispatch } from "react-redux";
+import { Form, Button } from "react-bootstrap";
 
 const LoginForm = () => {
-  const [username, setUsername] = useState([]);
-  const [password, setPassword] = useState([]);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const dispatch = useDispatch();
 
   const formLogin = (event) => {
@@ -23,27 +24,32 @@ const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={formLogin}>
-      <div>
-        username
-        <input
+    <Form
+      onSubmit={formLogin}
+      className="d-flex align-items-center justify-items-center flex-column"
+    >
+      <Form.Group>
+        <Form.Label>Username</Form.Label>
+        <Form.Control
           type="text"
           value={username}
-          name="Username"
           onChange={handleUsernameChange}
+          className="w-50 mb-3"
         />
-      </div>
-      <div>
-        password
-        <input
+      </Form.Group>
+      <Form.Group>
+        <Form.Label>Password</Form.Label>
+        <Form.Control
           type="password"
           value={password}
-          name="Password"
           onChange={handlePasswordChange}
-        />
-      </div>
-      <button type="submit">login</button>
-    </form>
+          className="w-50 mb-3"
+        ></Form.Control>
+      </Form.Group>
+      <Button variant="primary" type="submit" className="p-10">
+        Login
+      </Button>
+    </Form>
   );
 };
 

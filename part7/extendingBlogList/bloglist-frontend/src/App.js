@@ -37,7 +37,7 @@ const App = () => {
 
   if (!reduxLogin) {
     return (
-      <div>
+      <div className="container">
         <Notification />
         <LoginForm />
       </div>
@@ -45,7 +45,7 @@ const App = () => {
   }
 
   return (
-    <div>
+    <div className="container">
       <Notification />
       <Header />
       <Toggleable buttonLabel="new blog" ref={blogFromRef}>

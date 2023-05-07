@@ -49,7 +49,7 @@ export const addBlog = (Blog) => {
       settingNotification(
         {
           message: `${newBlog.title} by ${newBlog.author} has been added`,
-          type: "added",
+          type: "success",
         },
         5
       )

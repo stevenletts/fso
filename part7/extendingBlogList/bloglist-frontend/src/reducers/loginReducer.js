@@ -33,7 +33,7 @@ export const handleLogin = (credintials) => {
         settingNotification(
           {
             message: "something went wrong try again",
-            type: "error",
+            type: "danger",
           },
           5
         )
