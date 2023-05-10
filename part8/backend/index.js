@@ -197,7 +197,8 @@ const server = new ApolloServer({
 startStandaloneServer(server, {
   listen: { port: 4000 },
   context: async ({ req, res }) => {
-    const auth = req ? req.headers.authorization : null;
+    const auth = req ? req.headers.authorisaztion : null;
+    
     if (auth && auth.startsWith("Bearer ")) {
       const decodedToken = jwt.verify(
         auth.substring(7),
