@@ -1,3 +1,11 @@
+const { GraphQLError } = require("graphql");
+const jwt = require("jsonwebtoken");
+const Book = require("./models/book");
+const Author = require("./models/author");
+const User = require("./models/user");
+const { PubSub } = require("graphql-subscriptions");
+const pubsub = new PubSub();
+
 const resolvers = {
   Query: {
     bookCount: async () => Book.collection.countDocuments(),
@@ -24,16 +32,24 @@ const resolvers = {
 
       return await Book.find({}).populate("author");
     },
-    allAuthors: async () => Author.find({}),
+    allAuthors: async () => {
+      console.log("all authors");
+      const books = await Book.find({});
+      return Author.find({});
+    },
     me: (root, args, context) => {
       return context.currentUser;
     },
   },
   Author: {
     bookCount: async (root) => {
-      const authorFound = await Author.findOne({ name: root.name });
-      const booksFound = await Book.find({ author: authorFound.id });
-      return booksFound.length;
+      // console.log("book count");
+      return books.filter(
+        (book) => String(book.author) === String(root.id).length
+      );
+      // const authorFound = await Author.findOne({ name: root.name });
+      // const booksFound = await Book.find({ author: authorFound.id });
+      // return booksFound.length;
     },
   },
   Mutation: {
@@ -55,6 +71,7 @@ const resolvers = {
             },
           });
         }
+        pubsub.publish("BOOK_ADDED", { bookAdded: book });
         return book;
       }
       try {
@@ -63,6 +80,7 @@ const resolvers = {
         const newAuthor = await Author.findOne({ name: args.author });
         const book = new Book({ ...args, author: newAuthor });
         await book.save();
+        pubsub.publish("BOOK_ADDED", { bookAdded: book });
         return book;
       } catch (error) {
         throw new GraphQLError("saving book failed", {
@@ -114,4 +132,11 @@ const resolvers = {
       return { value: jwt.sign(userForToken, process.env.JWT_SECRET) };
     },
   },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator("BOOK_ADDED"),
+    },
+  },
 };
+
+module.exports = resolvers;

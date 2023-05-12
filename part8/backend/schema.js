@@ -7,6 +7,10 @@ const typeDefs = `
     me: User
   }
 
+  type Subscription {
+    bookAdded: Book!
+   }
+
   type User {
     username: String!
     favouriteGenre: String! 
@@ -41,8 +45,7 @@ const typeDefs = `
     ): Book
     editAuthor(name: String!, year: Int!): Author
     createUser(username: String!, favouriteGenre: String!): User
-    login(username: String!, password: String!)
- : Token  
+    login(username: String!, password: String!): Token  
 }`;
 
 module.exports = typeDefs;
