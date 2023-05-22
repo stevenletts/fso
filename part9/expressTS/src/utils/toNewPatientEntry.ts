@@ -1,4 +1,4 @@
-import { Gender, NewPatient } from "../types";
+import { Gender, NewPatient, Entry } from "../types";
 
 const toNewPatientEntry = (object: unknown): NewPatient => {
   if (!object || typeof object !== "object") {
@@ -10,7 +10,8 @@ const toNewPatientEntry = (object: unknown): NewPatient => {
     "occupation" in object &&
     "dateOfBirth" in object &&
     "ssn" in object &&
-    "gender" in object
+    "gender" in object &&
+    "entries" in object
   ) {
     const newEntry: NewPatient = {
       name: parseName(object.name),
@@ -18,6 +19,7 @@ const toNewPatientEntry = (object: unknown): NewPatient => {
       dateOfBirth: parseDateOfBirth(object.dateOfBirth),
       ssn: parseSSN(object.ssn),
       gender: parseGender(object.gender),
+      entries: parseEntries(object.entries),
     };
     return newEntry;
   }
@@ -72,6 +74,13 @@ const parseGender = (gender: unknown): Gender => {
     throw new Error("incorrect or missing gender" + gender);
   }
   return gender;
+};
+
+const parseEntries = (entries: any): Entry[] => {
+  if (!entries) {
+    throw new Error(`Incorrect or missing entries: ${entries}`);
+  }
+  return entries;
 };
 
 export default toNewPatientEntry;
